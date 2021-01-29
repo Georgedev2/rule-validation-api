@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 //ROUTING
+//------ROOT ROUTE
 app.get("/", (req, res) => {
   const msg = {
     message: "My Rule-Validation API",
@@ -23,43 +24,63 @@ app.get("/", (req, res) => {
   res.json(msg);
 });
 
+lg = console.log;
+
+//------VALIDATION ROUTE
 app.post("/validate-rule", (req, res) => {
-  //The rule and data fields are required.
-  let endPointResponse = (field) => {
+  const failureResponse = (field) => {
     let msg = {
       message: field,
       status: "error",
       data: null,
     };
-    return msg;
+    res.status(400).json(msg);
   };
 
-  //When the rule field isn't passed
-  if (res.body.rule) {
-    res.status(400).json(endPointResponse("rule is required."));
+  const successResponses = () => {
+    let msg = {
+      message: "field [name of field] successfully validated.",
+      status: "success",
+      data: {
+        validation: {
+          error: false,
+          field: "[name of field]",
+          field_value: "[value of field]",
+          condition: "[rule condition]",
+          condition_value: "[condition value]",
+        },
+      },
+    };
+    res.json(msg);
+  };
+
+  // Checking for the rule field in the request body
+  if (req.body.rule === undefined) {
+    failureResponse("rule is required.");
+  } else if (typeof req.body.rule === "object") {
+    //Checking if any of the fields specified in the rule filed is missing
+    let rule = req.body.rule;
+    if (rule.field === undefined) {
+      failureResponse("field field is missing from data.");
+    } else if (rule.condition === undefined) {
+      failureResponse("field condition is missing from data.");
+    } else if (rule.condition_value === undefined) {
+      failureResponse("field condition_value is missing from data.");
+    }
+  } else {
+    failureResponse("rule should be an object.");
   }
 
-  //When the data field isn't passed
-  if (res.body.data) {
-    res.status(400).json(endPointResponse("data is required."));
-  }
-
-  //If a data field is of the wrong type.
-  if (
-    typeof res.body.rule == "object" ||
-    res.body.rule.length ||
-    typeof res.body.rule == "string"
-  ) {
-    let dataTypeOfData = getDataType();
-    res
-      .status(400)
-      .json(
-        endPointResponse(`data should be either string, array or Json Object .`)
-      );
-  }
-  //if the rule field is passed as a number instead of a valid object
-  if (typeof res.body.rule !== "object") {
-    res.status(400).json(endPointResponse("rule should be an object."));
+  //Check if the data field in the req.body is either be STRING, ARRAY, OR OBJECT
+  if (req.body.data === undefined) {
+    // if the data field is not in the req.body
+    failureResponse("data is required.");
+  } else if (Array.isArray(req.body.data)) {
+   // failureResponse(`data is of type ARRAY`);
+  } else if (typeof req.body.data === "object") {
+   // failureResponse(` data is of type OBJECT`);
+  } else {
+  //  failureResponse(`data is of the right formate`);
   }
 });
 
@@ -67,15 +88,5 @@ app.post("/validate-rule", (req, res) => {
 app.listen(port, () => {
   console.log(`Input-Validation App  is listening at http://localhost:${port}`);
 });
-/* 
-let getDataType = () => {
-    if (typeof res.body.rule == "object") {
-      return "object";
-    } else if (typeof res.body.rule == "string") {
-      return "string";
-    } else if (res.body.rule.length) {
-      return "array";
-    } else {
-      return "None";
-    }
-  }; */
+
+//yarn start
