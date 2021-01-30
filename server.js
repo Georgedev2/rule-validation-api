@@ -4,9 +4,6 @@ const app = express();
 const cors = require("cors");
 const validator = require("./validator");
 
-//SET PORT NUMBER BASESD ON THE ENVIROMENT THE APP IS RUNNING
-const port = process.env.API_PORT || 10000;
-
 //ADDING MIDDLEWARES TO THE EXPRESS PROCESSING PIPELINE
 app.use(express.json());
 app.use(cors());
@@ -74,11 +71,13 @@ app.post("/validate-rule", (req, res) => {
   }
 });
 
-//LISTENING FOR REQUEST AT PORT
+//SET PORT NUMBER BASESD ON THE ENVIROMENT THE APP IS RUNNING
+const port = process.env.PORT || 10000;
+
 app.listen(port, () => {
   console.log(`Input-Validation App  is listening at http://localhost:${port}`);
 });
-
+//yarn update    // To updata your yarn package
 //git push heroku main
 
 //heroku logs --tail --app my-rule-validation-app
