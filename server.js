@@ -80,3 +80,6 @@ app.listen(port, () => {
 });
 
 //git push heroku main
+
+//heroku logs --tail --app my-rule-validation-app
+//heroku logs --tail
