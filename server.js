@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
   res.json(msg);
 });
 
-lg = console.log;
+//lg = console.log;
 
 //------VALIDATION ROUTE
 app.post("/validate-rule", (req, res) => {
@@ -41,8 +41,9 @@ app.post("/validate-rule", (req, res) => {
   if (req.body.rule === undefined) {
     failureResponse("rule is required.");
   } else if (typeof req.body.rule === "object") {
-    //Checking if any of the fields specified in the rule filed is missing
     let rule = req.body.rule;
+
+    //Check if any of the fields specified in the rule field is missing
     if (rule.field === undefined) {
       failureResponse("field field is missing from data.");
     } else if (rule.condition === undefined) {
@@ -50,16 +51,17 @@ app.post("/validate-rule", (req, res) => {
     } else if (rule.condition_value === undefined) {
       failureResponse("field condition_value is missing from data.");
     }
+    //
   } else {
     failureResponse("rule should be an object.");
   }
 
-  //Check if the data field in the req.body is either be STRING, ARRAY, OR OBJECT
+  //Check if the data field in the req.body is EMPTY
   if (req.body.data === undefined) {
-    // if the data field is not in the req.body
     failureResponse("data is required.");
   }
 
+  //Check if the data field is of the right format (ARRAY, OBJECT and STRING)
   if (
     Array.isArray(req.body.data) ||
     typeof req.body.data === "object" ||
@@ -77,5 +79,3 @@ const port = process.env.PORT || 10000;
 app.listen(port, () => {
   console.log(`Input-Validation App  is listening at http://localhost:${port}`);
 });
-
-

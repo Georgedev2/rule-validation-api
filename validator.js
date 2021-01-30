@@ -2,14 +2,8 @@ const validateData = (req, res) => {
   const rule = req.body.rule;
   const data = req.body.data;
   const condition = rule.condition;
-  const field = rule.field;
   const condition_value = rule.condition_value;
-  let validate_data_field = data[field];
-
-  if (field.indexOf(".") !== -1) {
-    const field_array = field.split(".");
-    validate_data_field = data[field_array[0]][field_array[1]];
-  }
+  let validate_data_field = processDataField(data, rule);
   let is_value = false;
 
   switch (condition) {
@@ -37,6 +31,20 @@ const validateData = (req, res) => {
     return errorResponses(rule, data, res);
   }
 };
+
+function processDataField(data, rule) {
+  const field = rule.field;
+  if (typeof data === "string" || Array.isArray(data)) {
+    return data[+field];
+  } else {
+    let validate_data_field = data[field];
+    if (field.indexOf(".") !== -1) {
+      const field_array = field.split(".");
+      validate_data_field = data[field_array[0]][field_array[1]];
+    }
+    return validate_data_field;
+  }
+}
 
 function eq(condition_value, value) {
   if (value === condition_value) {
@@ -71,7 +79,7 @@ function gte(condition_value, value) {
 }
 
 function contains(condition_value, value) {
-  if (value.indexOf(condition_value) !== -1) {
+  if (value === condition_value) {
     return true;
   } else {
     return false;
@@ -109,7 +117,18 @@ function errorResponses(rule, data, res) {
       },
     },
   };
+
   res.status(400).json(msg);
 }
+
+//"field 5 is missing from data."
+const errorResponse2 = (field) => {
+  let msg = {
+    message: field,
+    status: "error",
+    data: null,
+  };
+  res.status(400).json(msg);
+};
 
 module.exports = { validateData };
