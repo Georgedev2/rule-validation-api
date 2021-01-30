@@ -1,7 +1,10 @@
-//  REQUIRING MODULES
+//REQUIRING MODULES
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const validator = require("./validator");
+
+//SET PORT NUMBER BASESD ON THE ENVIROMENT THE APP IS RUNNING
 const port = process.env.API_PORT || 10000;
 
 //ADDING MIDDLEWARES TO THE EXPRESS PROCESSING PIPELINE
@@ -37,23 +40,6 @@ app.post("/validate-rule", (req, res) => {
     res.status(400).json(msg);
   };
 
-  const successResponses = () => {
-    let msg = {
-      message: "field [name of field] successfully validated.",
-      status: "success",
-      data: {
-        validation: {
-          error: false,
-          field: "[name of field]",
-          field_value: "[value of field]",
-          condition: "[rule condition]",
-          condition_value: "[condition value]",
-        },
-      },
-    };
-    res.json(msg);
-  };
-
   // Checking for the rule field in the request body
   if (req.body.rule === undefined) {
     failureResponse("rule is required.");
@@ -75,12 +61,16 @@ app.post("/validate-rule", (req, res) => {
   if (req.body.data === undefined) {
     // if the data field is not in the req.body
     failureResponse("data is required.");
-  } else if (Array.isArray(req.body.data)) {
-   // failureResponse(`data is of type ARRAY`);
-  } else if (typeof req.body.data === "object") {
-   // failureResponse(` data is of type OBJECT`);
+  }
+
+  if (
+    Array.isArray(req.body.data) ||
+    typeof req.body.data === "object" ||
+    typeof req.body.data === "string"
+  ) {
+    return validator.validateData(req, res);
   } else {
-  //  failureResponse(`data is of the right formate`);
+    return failureResponse(`data is of the right formate`);
   }
 });
 
@@ -89,4 +79,3 @@ app.listen(port, () => {
   console.log(`Input-Validation App  is listening at http://localhost:${port}`);
 });
 
-//yarn start

@@ -18,6 +18,25 @@
         validateData();
       });
 
+      let tesst = {
+        rule: {
+          field: "missions.count",
+          condition: "gte",
+          condition_value: 30,
+        },
+        data: {
+          name: "James Holden",
+          crew: "Rocinante",
+          age: 34,
+          position: "Captain",
+          missions: {
+            count: 45,
+            successful: 44,
+            failed: 1,
+          },
+        },
+      };
+
       let input1 = {
         rule: {
           field: "missions",
@@ -33,13 +52,13 @@
         },
       };
       let input2 = {
-         rule: {
-         field: "missions",  
+        rule: {
+          field: "missions",
           condition: "gte",
-         condition_value: 30,
-        },  
-      //  rule:"hssh"
-       //rule:893823
+          condition_value: 30,
+        },
+        //  rule:"hssh"
+        //rule:893823
       };
       let input3 = {
         /*   data: {
@@ -62,7 +81,7 @@
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(input2),
+            body: JSON.stringify(tesst),
           });
           let data = await res.json();
           if (res.status == 200) {
