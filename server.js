@@ -71,16 +71,11 @@ app.post("/validate-rule", (req, res) => {
   }
 });
 
-//SET PORT NUMBER BASESD ON THE ENVIROMENT THE APP IS RUNNING
+//SETING PORT NUMBER BASESD ON THE ENVIROMENT THE APP IS RUNNING
 const port = process.env.PORT || 10000;
 
 app.listen(port, () => {
   console.log(`Input-Validation App  is listening at http://localhost:${port}`);
 });
-//yarn update    // To updata your yarn package
-//git push heroku main
 
-//heroku logs --tail --app my-rule-validation-app
-//heroku logs --tail
 
-//git commit -a -m "added some more changes"
