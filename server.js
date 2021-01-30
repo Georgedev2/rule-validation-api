@@ -83,3 +83,5 @@ app.listen(port, () => {
 
 //heroku logs --tail --app my-rule-validation-app
 //heroku logs --tail
+
+//git commit -a -m "added some more changes"
